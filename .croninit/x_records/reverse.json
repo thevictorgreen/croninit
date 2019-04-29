@@ -1,0 +1,14 @@
+{
+    "Comment": "Create PTR Record For This Host",
+    "Changes": [{
+        "Action": "UPSERT",
+        "ResourceRecordSet": {
+            "Name": "YYYYY",
+            "Type": "PTR",
+            "TTL": 300,
+            "ResourceRecords": [{
+                "Value": "ZZZZZ"
+            }]
+        }
+    }]
+}

@@ -1,0 +1,14 @@
+{
+    "Comment": "Create Record For This Host",
+    "Changes": [{
+        "Action": "UPSERT",
+        "ResourceRecordSet": {
+            "Name": "YYYYY",
+            "Type": "SRV",
+            "TTL": 300,
+            "ResourceRecords": [{
+                "Value": "0 100 123 ZZZZZ"
+            }]
+        }
+    }]
+}
