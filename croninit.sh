@@ -46,35 +46,48 @@ then
       # IAM Profile May have not been applied yet
       # Don't move forward until it is
       # We need to query values from the tags
+      echo "getting domain"
       domain=
       while [[ -z "$domain" ]]
       do
         domain=$( query_tags domain )
         sleep 10
       done
+      echo "received domain $domain"
 
       # Get Parameters From Remaining Tags
+      echo "Getting remaining parameters from tags"
       forwardzoneid=$( query_tags forwardzoneid )
       reversezoneid=$( query_tags reversezoneid )
       is_ipa_server=$( query_tags is-ipa-server )
       join_ipa=$( query_tags join-ipa)
       join_chef=$( query_tags join-chef)
+      echo "received remaining parameters $forwardzoneid $reversezoneid $is_ipa_server $join_ipa $join_chef"
 
       # Generate Hostname
+      echo "generating hostname"
       LOCAL_NAME=$( echo rhw$(tr -cd "[:digit:]" < /dev/urandom | fold -w2 | head -n1).${domain} )
+      echo $LOCAL_NAME
 
       # Grab private IP Address
+      echo "grabbing local ip"
       LOCAL_IPV4=$( curl http://169.254.169.254/latest/meta-data/local-ipv4 )
+      echo "have local ip $LOCAL_IPV4"
 
       # Create Reverse Hostname
+      echo "creating reverse hostname"
       OCTET1=$( echo $LOCAL_IPV4 | cut -d. -f1 )
       OCTET2=$( echo $LOCAL_IPV4 | cut -d. -f2 )
       OCTET3=$( echo $LOCAL_IPV4 | cut -d. -f3 )
       OCTET4=$( echo $LOCAL_IPV4 | cut -d. -f4 )
       REVER_IPV4=${OCTET4}.${OCTET3}.${OCTET2}.${OCTET1}.in-addr.arpa
+      echo "created reverse hostname $REVER_IPV4"
 
       # Set Hostname
+      echo "setting hostname"
       hostnamectl set-hostname $LOCAL_NAME
+      echo "hostname set"
+      hostnamectl
 
       # Update /etc/hosts
       echo $LOCAL_IPV4 $LOCAL_NAME >> /etc/hosts
